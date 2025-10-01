@@ -1,0 +1,66 @@
+name: Go Build and Push
+
+on:
+  push:
+    branches:
+      - main
+      - go-migration
+    paths:
+      - .github/workflows/go-build.yaml
+      - 'go.mod'
+      - 'go.sum'
+      - 'pkg/**'
+      - 'cmd/**'
+      - 'Dockerfile.go'
+
+jobs:
+  changes:
+    runs-on: ubuntu-latest
+    outputs:
+      go_code: ${{ steps.filter.outputs.go_code }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+      - uses: dorny/paths-filter@v3
+        id: filter
+        with:
+          base: ${{ github.ref }}
+          filters: |
+            go_code:
+              - .github/workflows/go-build.yaml
+              - 'go.mod'
+              - 'go.sum'
+              - 'pkg/**'
+              - 'cmd/**'
+              - 'Dockerfile.go'
+
+  build-go-agents:
+    runs-on: ubuntu-latest
+    needs: changes
+    if: ${{ needs.changes.outputs.go_code == 'true' }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+          
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: '1.21'
+          cache: true
+          
+      - name: Build Docker image
+        run: |
+          docker build -t ghcr.io/teal-agents/teal-agents-go:latest -f Dockerfile.go .
+          
+      - name: Log in to Docker registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+          
+      - name: Push Docker image
+        run: docker push ghcr.io/teal-agents/teal-agents-go:latest
