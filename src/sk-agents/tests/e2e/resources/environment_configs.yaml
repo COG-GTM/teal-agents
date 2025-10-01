@@ -1,0 +1,52 @@
+
+local:
+  mode: "local"
+  agent_service:
+    url: "http://localhost:8001"
+    endpoint: "/UniversityAgent/0.1"
+    startup_timeout: 30
+    health_check_endpoint: "/UniversityAgent/0.1/docs"
+    startup_command: "cd ~/repos/teal-agents/src/sk-agents && uv run uvicorn sk_agents.app:app --host 0.0.0.0 --port 8001"
+  
+  streamlit_ui:
+    url: "http://localhost:8502"
+    startup_timeout: 20
+    startup_command: "cd ~/repos/teal-agents/src/orchestrators/assistant-orchestrator/example/university && uv run streamlit run streamlit_ui.py --server.port 8502"
+  
+  external_apis:
+    universities_api: "http://universities.hipolabs.com/search"
+    mock_enabled: true
+    mock_port: 8888
+  
+  environment_vars:
+    GEMINI_API_KEY: "${GEMINI_API_KEY}"
+    TA_SERVICE_CONFIG: "/home/ubuntu/repos/teal-agents/src/orchestrators/assistant-orchestrator/example/university/config.yaml"
+    TA_PLUGIN_MODULE: "/home/ubuntu/repos/teal-agents/src/orchestrators/assistant-orchestrator/example/university/custom_plugins.py"
+    TA_CUSTOM_CHAT_COMPLETION_FACTORY_MODULE: "src/sk_agents/chat_completion/custom/gemini_chat_completion_factory.py"
+    TA_CUSTOM_CHAT_COMPLETION_FACTORY_CLASS_NAME: "GeminiChatCompletionFactory"
+  
+  timeouts:
+    agent_response: 30
+    ui_interaction: 10
+    api_call: 15
+
+uat:
+  mode: "uat"
+  agent_service:
+    url: "http://uat-agent-server:8001"
+    endpoint: "/UniversityAgent/0.1"
+    health_check_endpoint: "/UniversityAgent/0.1/docs"
+  
+  streamlit_ui:
+    url: "http://uat-streamlit:8502"
+  
+  external_apis:
+    universities_api: "http://universities.hipolabs.com/search"
+    mock_enabled: false
+  
+  timeouts:
+    agent_response: 30
+    ui_interaction: 10
+    api_call: 15
+
+default_mode: "local"

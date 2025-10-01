@@ -1,0 +1,36 @@
+
+test_scenarios:
+  basic_search:
+    query: "Find universities in Finland"
+    expected_results:
+      - name: "Aalto University"
+        country: "Finland"
+      - name: "University of Helsinki"
+        country: "Finland"
+    
+  country_search:
+    query: "What universities are in Japan?"
+    country_filter: "Japan"
+    expected_count: 10
+    
+  specific_university:
+    query: "Search for MIT"
+    expected_results:
+      - name: "Massachusetts Institute of Technology"
+        country: "United States"
+        domain: "mit.edu"
+
+  no_results:
+    query: "Universities in Atlantis"
+    expected_count: 0
+    expected_message: "No universities found"
+
+university_fields:
+  required:
+    - name
+    - web_pages
+    - domains
+    - country
+    - alpha_two_code
+  optional:
+    - state_province
