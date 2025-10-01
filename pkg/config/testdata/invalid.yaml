@@ -1,0 +1,5 @@
+apiVersion: skagents/v1
+kind: InvalidOrchestrator
+description: Invalid config for testing
+spec:
+  [invalid yaml syntax
