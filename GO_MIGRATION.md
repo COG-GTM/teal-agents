@@ -13,20 +13,17 @@ This document outlines the approach for migrating the Teal Agents framework from
    - Initial CI/CD workflows
    - This documentation
 
-2. **Session 2: Core Types and Configuration** ✅
+2. **Session 2: Core Types and Configuration**
    - Complete implementation of types package
    - YAML configuration loading
    - Environment variable handling
    - Telemetry integration (OpenTelemetry)
 
-3. **Session 3: Core Semantic Kernel Port - Basic Interfaces** ✅
-   - Core kernel interfaces (ChatHistory, ChatMessageContent, ContentItems)
-   - Function calling types (FunctionCallContent, FunctionResultContent)
-   - Agent builder pattern implementation
-   - Model provider abstraction (OpenAI, Anthropic, Google)
-   - Plugin system interfaces
-   - Error handling types
-   - All foundational interfaces for agent implementations
+3. **Session 3: Kernel and LLM Integration**
+   - Implement ChatCompletionClient using langchaingo
+   - Support for OpenAI, Anthropic, Google providers
+   - Plugin system for tool calling
+   - Structured output support
 
 4. **Session 4: Sequential Agent Implementation**
    - Complete Sequential agent with task orchestration
@@ -350,5 +347,5 @@ For questions about the migration:
 
 ---
 
-Last Updated: Session 3 - Core Semantic Kernel Port - Basic Interfaces
-Next Session: Session 4 - Sequential Agent Implementation
+Last Updated: Session 1 - Project Foundation
+Next Session: Session 2 - Core Types and Configuration
