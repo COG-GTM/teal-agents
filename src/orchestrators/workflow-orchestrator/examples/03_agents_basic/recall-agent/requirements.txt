@@ -4,3 +4,4 @@ qdrant-client
 python-dotenv
 black
 semantic-kernel
+urllib3>=2.6.0 # not directly required, pinned by Snyk to avoid a vulnerability
