@@ -1,4 +1,4 @@
-FROM python:3.12-slim
+FROM python:3.14.4-slim
 
 RUN apt-get update \
     && apt-get install --no-install-recommends -y curl git \
