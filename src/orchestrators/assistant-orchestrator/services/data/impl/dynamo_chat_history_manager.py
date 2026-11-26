@@ -101,9 +101,18 @@ class DynamoChatHistoryManager(ChatHistoryManager, metaclass=Singleton):
     async def get_chat_history_session(
         self, orchestrator_name: str, user_id: str, session_id: str
     ) -> ChatHistory | None:
-        chat_history_items = await self.get_session_items(orchestrator_name, session_id)
+        # Run the item query and the session lookup concurrently, but surface
+        # errors in the same order as when they ran one after the other.
+        chat_history_items, dynamo_history = await asyncio.gather(
+            self.get_session_items(orchestrator_name, session_id),
+            asyncio.to_thread(DynamoChatHistory.get, user_id, session_id),
+            return_exceptions=True,
+        )
+        if isinstance(chat_history_items, BaseException):
+            raise chat_history_items
         try:
-            dynamo_history = await asyncio.to_thread(DynamoChatHistory.get, user_id, session_id)
+            if isinstance(dynamo_history, BaseException):
+                raise dynamo_history
             if dynamo_history.orchestrator != orchestrator_name:
                 return None
             chat_history = ChatHistory(
